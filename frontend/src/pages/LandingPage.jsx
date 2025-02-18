@@ -65,58 +65,15 @@ export default function LandingPage() {
 
           {/* Get Help Button */}
           <button
-            onClick={() => navigate("/resources")}
+            onClick={() => navigate("/dashboard")}
             className="bg-white dark:bg-gray-700 text-purple-900 dark:text-white px-6 py-3 rounded-lg shadow-lg hover:bg-gray-200 dark:hover:bg-gray-600 mx-2"
           >
             Get Help
           </button>
         </div>
       </header>
-
-      {/* Wallet Connect Modal */}
       {isModalOpen && <WalletConnectModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
-
-      {/* Features Section */}
-      {/* <section className="container mx-auto py-16 px-6 text-center">
-        <h3 className="text-3xl font-bold text-purple-900 dark:text-white">Why Choose Safe Space?</h3>
-        <div className="grid md:grid-cols-3 gap-8 mt-8">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-            <h4 className="text-xl font-bold text-gray-900 dark:text-white">Anonymous & Secure</h4>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Your identity remains protected with end-to-end encryption.</p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-            <h4 className="text-xl font-bold text-gray-900 dark:text-white">Instant Help</h4>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Connect with NGOs, lawyers, and counselors with one click.</p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-            <h4 className="text-xl font-bold text-gray-900 dark:text-white">Transparent Support</h4>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Donations are managed via blockchain for 100% transparency.</p>
-          </div>
-        </div>
-      </section> */}
       <div>
-      {/* Other content sections here */}
-
-      {/* <section className="container mx-auto py-16 px-6 text-center">
-        <h3 className="text-3xl font-bold text-purple-900 dark:text-white">Why Choose Safe Space?</h3>
-        <div className="grid md:grid-cols-3 gap-8 mt-8">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-            <h4 className="text-xl font-bold text-gray-900 dark:text-white">Anonymous & Secure</h4>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Your identity remains protected with end-to-end encryption.</p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-            <h4 className="text-xl font-bold text-gray-900 dark:text-white">Instant Help</h4>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Connect with NGOs, lawyers, and counselors with one click.</p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-            <h4 className="text-xl font-bold text-gray-900 dark:text-white">Transparent Support</h4>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Donations are managed via blockchain for 100% transparency.</p>
-          </div>
-        </div>
-      </section> */}
-
-      {/* Use the FeatureSection component here */}
-      {/* <FeatureSection /> */}
       <FeatureSection darkMode={darkMode} />
 
       {/* More content sections if needed */}
