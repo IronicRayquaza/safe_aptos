@@ -39,13 +39,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
+import rollupNodePolyFill from 'rollup-plugin-polyfill-node';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [tailwindcss(), react()],
   resolve: {
     alias: {
-      global: 'global',
+      global: 'global',  // Ensure global is mapped properly
       buffer: 'buffer',
       stream: 'stream-browserify',
     },
@@ -53,7 +54,7 @@ export default defineConfig({
   optimizeDeps: {
     esbuildOptions: {
       define: {
-        global: 'window',
+        global: 'globalThis', // 🔥 Fix: Define global properly
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({
@@ -64,12 +65,12 @@ export default defineConfig({
     },
   },
   build: {
-    chunkSizeWarningLimit: 600, // Increase limit (optional)
     rollupOptions: {
+      plugins: [rollupNodePolyFill()], // 🔥 Add Node.js polyfills
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            return 'vendor'; // Separate dependencies into "vendor.js"
+            return 'vendor';
           }
         },
       },
