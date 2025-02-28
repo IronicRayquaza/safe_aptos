@@ -54,7 +54,7 @@ export default defineConfig({
   optimizeDeps: {
     esbuildOptions: {
       define: {
-        global: 'globalThis',
+        global: 'window', // Polyfill for WalletConnect
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({
@@ -65,18 +65,9 @@ export default defineConfig({
     },
   },
   build: {
-    chunkSizeWarningLimit: 600, // Set warning threshold to 600KB
     rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'react-vendor';
-            if (id.includes('web3')) return 'web3-vendor';
-            return 'vendor'; // Split other node_modules into "vendor"
-          }
-        },
-      },
       plugins: [rollupNodePolyFill()],
     },
   },
 });
+
