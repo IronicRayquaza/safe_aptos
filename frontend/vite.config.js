@@ -46,7 +46,7 @@ export default defineConfig({
   plugins: [tailwindcss(), react()],
   resolve: {
     alias: {
-      global: 'global',  // Ensure global is mapped properly
+      global: 'global',
       buffer: 'buffer',
       stream: 'stream-browserify',
     },
@@ -54,7 +54,7 @@ export default defineConfig({
   optimizeDeps: {
     esbuildOptions: {
       define: {
-        global: 'globalThis', // 🔥 Fix: Define global properly
+        global: 'globalThis',
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({
@@ -65,15 +65,18 @@ export default defineConfig({
     },
   },
   build: {
+    chunkSizeWarningLimit: 600, // Set warning threshold to 600KB
     rollupOptions: {
-      plugins: [rollupNodePolyFill()], // 🔥 Add Node.js polyfills
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            return 'vendor';
+            if (id.includes('react')) return 'react-vendor';
+            if (id.includes('web3')) return 'web3-vendor';
+            return 'vendor'; // Split other node_modules into "vendor"
           }
         },
       },
+      plugins: [rollupNodePolyFill()],
     },
   },
 });
