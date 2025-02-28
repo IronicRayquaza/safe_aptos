@@ -1,4 +1,4 @@
-import "./init";
+// import "./init";
 import React, { useState } from "react";
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";

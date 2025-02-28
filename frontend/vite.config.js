@@ -44,6 +44,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  define: {
+    global: {}, // Ensures 'global' is defined
+  },
   resolve: {
     alias: {
       global: 'global',
@@ -54,7 +57,7 @@ export default defineConfig({
   optimizeDeps: {
     esbuildOptions: {
       define: {
-        global: 'window', // Polyfill for WalletConnect
+        global: 'window', // Ensures compatibility with WalletConnect
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({
