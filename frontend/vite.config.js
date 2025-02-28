@@ -39,23 +39,21 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import rollupNodePolyFill from 'rollup-plugin-polyfill-node'; // Polyfills for Buffer, Stream, etc.
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  plugins: [tailwindcss(),react()],
+  plugins: [tailwindcss(), react()],
   resolve: {
     alias: {
       global: 'global',
       buffer: 'buffer',
-      stream: 'stream-browserify', // Stream polyfill
-      process: 'process/browser',  // Process polyfill
+      stream: 'stream-browserify',
     },
   },
   optimizeDeps: {
     esbuildOptions: {
       define: {
-        global: 'window', // Fix WalletConnect issues
+        global: 'window',
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({
@@ -66,10 +64,15 @@ export default defineConfig({
     },
   },
   build: {
+    chunkSizeWarningLimit: 600, // Increase limit (optional)
     rollupOptions: {
-      plugins: [
-        rollupNodePolyFill(), // Polyfill Node.js modules
-      ],
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor'; // Separate dependencies into "vendor.js"
+          }
+        },
+      },
     },
   },
 });
