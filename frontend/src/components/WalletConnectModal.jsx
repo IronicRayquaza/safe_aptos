@@ -183,7 +183,7 @@
 //   );
 // }
 
-"use client"; // If using Next.js, ensure it's a client component
+"use client"; // Needed for Next.js
 
 import React, { useState, useEffect } from "react";
 import Web3 from "web3";
@@ -191,12 +191,18 @@ import Web3 from "web3";
 export default function WalletConnectModal({ isOpen, onClose }) {
   const [walletAddress, setWalletAddress] = useState(null);
   const [provider, setProvider] = useState(null);
-  let WalletConnectProvider, CoinbaseWalletSDK;
+  const [walletConnectProvider, setWalletConnectProvider] = useState(null);
+  const [coinbaseWalletSDK, setCoinbaseWalletSDK] = useState(null);
 
+  // ✅ Use `import()` instead of `require()`
   useEffect(() => {
     if (typeof window !== "undefined") {
-      WalletConnectProvider = require("@walletconnect/web3-provider").default;
-      CoinbaseWalletSDK = require("@coinbase/wallet-sdk").default;
+      import("@walletconnect/web3-provider").then((module) =>
+        setWalletConnectProvider(new module.default({ rpc: { 1: process.env.NEXT_PUBLIC_INFURA_KEY || "https://mainnet.infura.io/v3/YOUR_INFURA_KEY" } }))
+      );
+      import("@coinbase/wallet-sdk").then((module) =>
+        setCoinbaseWalletSDK(new module.default({ appName: "My App" }))
+      );
     }
   }, []);
 
@@ -219,10 +225,9 @@ export default function WalletConnectModal({ isOpen, onClose }) {
 
   // ✅ Connect Coinbase Wallet
   const handleConnectCoinbase = async () => {
+    if (!coinbaseWalletSDK) return;
     try {
-      if (!CoinbaseWalletSDK) return;
-      const coinbaseWallet = new CoinbaseWalletSDK({ appName: "My App" });
-      const provider = coinbaseWallet.makeWeb3Provider();
+      const provider = coinbaseWalletSDK.makeWeb3Provider();
       const addresses = await provider.request({ method: "eth_requestAccounts" });
 
       if (addresses.length > 0) {
@@ -243,7 +248,6 @@ export default function WalletConnectModal({ isOpen, onClose }) {
       provider.on("disconnect", () => {
         handleDisconnect();
       });
-
     } catch (error) {
       console.error("Coinbase connection failed:", error);
     }
@@ -251,12 +255,8 @@ export default function WalletConnectModal({ isOpen, onClose }) {
 
   // ✅ Connect WalletConnect
   const handleConnectWalletConnect = async () => {
+    if (!walletConnectProvider) return;
     try {
-      if (!WalletConnectProvider) return;
-      const walletConnectProvider = new WalletConnectProvider({
-        rpc: { 1: process.env.NEXT_PUBLIC_INFURA_KEY || "https://mainnet.infura.io/v3/YOUR_INFURA_KEY" },
-      });
-
       await walletConnectProvider.enable();
       const web3 = new Web3(walletConnectProvider);
       const accounts = await web3.eth.getAccounts();
