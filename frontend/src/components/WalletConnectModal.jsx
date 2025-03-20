@@ -1,18 +1,31 @@
-// // import "./init";
-// import React, { useState } from "react";
+
+
+// "use client"; // Needed for Next.js
+
+// import React, { useState, useEffect } from "react";
 // import Web3 from "web3";
-// import WalletConnectProvider from "@walletconnect/web3-provider";
-// import { CoinbaseWalletSDK } from "@coinbase/wallet-sdk";
-// // import { PetraWallet } from "@aptos-labs/wallet-adapter-petra"; // Import Petra Wallet for Aptos
-// import { BCS, TxnBuilderTypes } from "aptos"; // Import Aptos SDK
 
 // export default function WalletConnectModal({ isOpen, onClose }) {
 //   const [walletAddress, setWalletAddress] = useState(null);
 //   const [provider, setProvider] = useState(null);
+//   const [walletConnectProvider, setWalletConnectProvider] = useState(null);
+//   const [coinbaseWalletSDK, setCoinbaseWalletSDK] = useState(null);
+
+//   // ✅ Use `import()` instead of `require()`
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       import("@walletconnect/web3-provider").then((module) =>
+//         setWalletConnectProvider(new module.default({ rpc: { 1: process.env.NEXT_PUBLIC_INFURA_KEY || "https://mainnet.infura.io/v3/YOUR_INFURA_KEY" } }))
+//       );
+//       import("@coinbase/wallet-sdk").then((module) =>
+//         setCoinbaseWalletSDK(new module.default({ appName: "My App" }))
+//       );
+//     }
+//   }, []);
 
 //   // ✅ Connect MetaMask
 //   const handleConnectMetaMask = async () => {
-//     if (window.ethereum) {
+//     if (typeof window !== "undefined" && window.ethereum) {
 //       const web3 = new Web3(window.ethereum);
 //       try {
 //         await window.ethereum.request({ method: "eth_requestAccounts" });
@@ -29,9 +42,9 @@
 
 //   // ✅ Connect Coinbase Wallet
 //   const handleConnectCoinbase = async () => {
+//     if (!coinbaseWalletSDK) return;
 //     try {
-//       const coinbaseWallet = new CoinbaseWalletSDK({ appName: "My App" });
-//       const provider = coinbaseWallet.makeWeb3Provider();
+//       const provider = coinbaseWalletSDK.makeWeb3Provider();
 //       const addresses = await provider.request({ method: "eth_requestAccounts" });
 
 //       if (addresses.length > 0) {
@@ -49,11 +62,9 @@
 //         }
 //       });
 
-//       provider.on("disconnect", (error) => {
-//         console.error("Coinbase Wallet disconnected:", error);
+//       provider.on("disconnect", () => {
 //         handleDisconnect();
 //       });
-
 //     } catch (error) {
 //       console.error("Coinbase connection failed:", error);
 //     }
@@ -61,11 +72,8 @@
 
 //   // ✅ Connect WalletConnect
 //   const handleConnectWalletConnect = async () => {
+//     if (!walletConnectProvider) return;
 //     try {
-//       const walletConnectProvider = new WalletConnectProvider({
-//         rpc: { 1: "https://mainnet.infura.io/v3/YOUR_INFURA_KEY" },
-//       });
-
 //       await walletConnectProvider.enable();
 //       const web3 = new Web3(walletConnectProvider);
 //       const accounts = await web3.eth.getAccounts();
@@ -82,13 +90,12 @@
 
 //   // ✅ Connect Petra Wallet (Aptos)
 //   const handleConnectPetra = async () => {
-//     try {
-//       if (!window.aptos) {
-//         alert("Petra Wallet is not installed. Install it from https://petra.app/");
-//         return;
-//       }
+//     if (typeof window === "undefined" || !window.aptos) {
+//       alert("Petra Wallet is not installed. Install it from https://petra.app/");
+//       return;
+//     }
 
-//       // Connect to Petra
+//     try {
 //       const result = await window.aptos.connect();
 //       if (result) {
 //         const accountInfo = await window.aptos.account();
@@ -96,7 +103,6 @@
 //         setProvider("Petra");
 //       }
 
-//       // Listen for account changes
 //       window.aptos.on("accountChange", (newAccount) => {
 //         setWalletAddress(newAccount.address);
 //       });
@@ -151,29 +157,25 @@
 //                 onClick={handleConnectMetaMask}
 //                 className="w-full flex gap-2 items-center justify-center border text-sm py-2 px-4 rounded-lg bg-stone-200 dark:bg-gray-800 hover:bg-stone-100 dark:hover:bg-gray-700 transition"
 //               >
-//                 <img src="https://docs.material-tailwind.com/icons/metamask.svg" alt="MetaMask" className="h-6 w-6" />
-//                 <p className="text-stone-700 dark:text-white font-semibold">Connect with MetaMask</p>
+//                 Connect with MetaMask
 //               </button>
 //               <button
 //                 onClick={handleConnectCoinbase}
 //                 className="w-full flex gap-2 items-center justify-center border text-sm py-2 px-4 rounded-lg bg-stone-200 dark:bg-gray-800 hover:bg-stone-100 dark:hover:bg-gray-700 transition"
 //               >
-//                 <img src="https://docs.material-tailwind.com/icons/coinbase.svg" alt="Coinbase" className="h-6 w-6 rounded" />
-//                 <p className="text-stone-700 dark:text-white font-semibold">Connect with Coinbase</p>
+//                 Connect with Coinbase
 //               </button>
 //               <button
 //                 onClick={handleConnectWalletConnect}
 //                 className="w-full flex gap-2 items-center justify-center border text-sm py-2 px-4 rounded-lg bg-stone-200 dark:bg-gray-800 hover:bg-stone-100 dark:hover:bg-gray-700 transition"
 //               >
-//                 <img src="https://docs.material-tailwind.com/icons/trust-wallet.svg" alt="Trust Wallet" className="h-6 w-6 rounded" />
-//                 <p className="text-stone-700 dark:text-white font-semibold">Connect with WalletConnect</p>
+//                 Connect with WalletConnect
 //               </button>
 //               <button
 //                 onClick={handleConnectPetra}
 //                 className="w-full flex gap-2 items-center justify-center border text-sm py-2 px-4 rounded-lg bg-stone-200 dark:bg-gray-800 hover:bg-stone-100 dark:hover:bg-gray-700 transition"
 //               >
-//                 <img src="https://petra.app/favicon.ico" alt="Petra Wallet" className="h-6 w-6 rounded" />
-//                 <p className="text-stone-700 dark:text-white font-semibold">Connect with Petra Wallet</p>
+//                 Connect with Petra Wallet
 //               </button>
 //             </div>
 //           )}
@@ -183,7 +185,6 @@
 //   );
 // }
 
-"use client"; // Needed for Next.js
 
 import React, { useState, useEffect } from "react";
 import Web3 from "web3";
@@ -194,7 +195,7 @@ export default function WalletConnectModal({ isOpen, onClose }) {
   const [walletConnectProvider, setWalletConnectProvider] = useState(null);
   const [coinbaseWalletSDK, setCoinbaseWalletSDK] = useState(null);
 
-  // ✅ Use `import()` instead of `require()`
+  // ✅ Dynamic Import for Vercel
   useEffect(() => {
     if (typeof window !== "undefined") {
       import("@walletconnect/web3-provider").then((module) =>
@@ -205,6 +206,14 @@ export default function WalletConnectModal({ isOpen, onClose }) {
       );
     }
   }, []);
+
+  // ✅ Wallet Icons
+  const walletIcons = {
+    metamask: "https://upload.wikimedia.org/wikipedia/en/3/36/MetaMask_Fox.svg",
+    coinbase: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Coinbase.svg/120px-Coinbase.svg.png",
+    walletconnect: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/WalletConnect-Logo.png/120px-WalletConnect-Logo.png",
+    petra: "https://petra.app/favicon.ico",
+  };
 
   // ✅ Connect MetaMask
   const handleConnectMetaMask = async () => {
@@ -233,17 +242,7 @@ export default function WalletConnectModal({ isOpen, onClose }) {
       if (addresses.length > 0) {
         setWalletAddress(addresses[0]);
         setProvider("Coinbase");
-      } else {
-        console.error("No accounts found in Coinbase Wallet.");
       }
-
-      provider.on("accountsChanged", (accounts) => {
-        if (accounts.length > 0) {
-          setWalletAddress(accounts[0]);
-        } else {
-          handleDisconnect();
-        }
-      });
 
       provider.on("disconnect", () => {
         handleDisconnect();
@@ -285,14 +284,6 @@ export default function WalletConnectModal({ isOpen, onClose }) {
         setWalletAddress(accountInfo.address);
         setProvider("Petra");
       }
-
-      window.aptos.on("accountChange", (newAccount) => {
-        setWalletAddress(newAccount.address);
-      });
-
-      window.aptos.on("disconnect", () => {
-        handleDisconnect();
-      });
     } catch (error) {
       console.error("Petra Wallet connection failed:", error);
     }
@@ -340,24 +331,28 @@ export default function WalletConnectModal({ isOpen, onClose }) {
                 onClick={handleConnectMetaMask}
                 className="w-full flex gap-2 items-center justify-center border text-sm py-2 px-4 rounded-lg bg-stone-200 dark:bg-gray-800 hover:bg-stone-100 dark:hover:bg-gray-700 transition"
               >
+                <img src={walletIcons.metamask} alt="MetaMask" className="h-6 w-6" />
                 Connect with MetaMask
               </button>
               <button
                 onClick={handleConnectCoinbase}
                 className="w-full flex gap-2 items-center justify-center border text-sm py-2 px-4 rounded-lg bg-stone-200 dark:bg-gray-800 hover:bg-stone-100 dark:hover:bg-gray-700 transition"
               >
+                <img src={walletIcons.coinbase} alt="Coinbase" className="h-6 w-6" />
                 Connect with Coinbase
               </button>
               <button
                 onClick={handleConnectWalletConnect}
                 className="w-full flex gap-2 items-center justify-center border text-sm py-2 px-4 rounded-lg bg-stone-200 dark:bg-gray-800 hover:bg-stone-100 dark:hover:bg-gray-700 transition"
               >
+                <img src={walletIcons.walletconnect} alt="WalletConnect" className="h-6 w-6" />
                 Connect with WalletConnect
               </button>
               <button
                 onClick={handleConnectPetra}
                 className="w-full flex gap-2 items-center justify-center border text-sm py-2 px-4 rounded-lg bg-stone-200 dark:bg-gray-800 hover:bg-stone-100 dark:hover:bg-gray-700 transition"
               >
+                <img src={walletIcons.petra} alt="Petra" className="h-6 w-6" />
                 Connect with Petra Wallet
               </button>
             </div>
