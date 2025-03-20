@@ -209,9 +209,9 @@ export default function WalletConnectModal({ isOpen, onClose }) {
 
   // ✅ Wallet Icons
   const walletIcons = {
-    metamask: "../public/metamask.svg",
-    coinbase: "../public/coinbase.svg",
-    walletconnect: "../public/walletconnect.svg",
+    metamask: "/metamask.svg",
+    coinbase: "/coinbase.svg",
+    walletconnect: "/walletconnect.svg",
     petra: "https://petra.app/favicon.ico",
   };
 
